@@ -48,6 +48,7 @@ window_width = 700
 window_height = 500
 
 lost = 0
+score = 0
 
 bullets = sprite.Group()
 enemies = sprite.Group()
@@ -70,6 +71,12 @@ mixer.music.play()
 
 fire_sound = mixer.Sound("fire.ogg")
 
+font.init()
+font1 = font.Font(None, 70)
+font2 = font.Font(None, 36)
+
+win = font1.render("You Win!!!", True, (15, 225, 0))
+lose = font1.render("You Lose!!!", True, (245, 0, 0))
 
 clock = time.Clock()
 fps = 60
@@ -84,17 +91,43 @@ while run:
             player.fire()
             fire_sound.play()
 
+    if not finish:
+        window.blit(background, (0, 0))
 
-    window.blit(background, (0, 0))
+        text_score = font2.render(f"Рахунок: {score}", True, (255, 255, 255))
+        text_lost = font2.render(f"Пpопущено: {lost}", True, (255, 255, 255))
 
-    player.update(window)
-    player.reset(window)
+        window.blit(text_score, (20, 20))
+        window.blit(text_lost, (20, 50))
 
-    enemies.update()
-    enemies.draw(window)
+        player.update(window)
+        player.reset(window)
 
-    bullets.update()
-    bullets.draw(window)
+        enemies.update()
+        enemies.draw(window)
 
-    display.update()
-    clock.tick(fps)
+        bullets.update()
+        bullets.draw(window)
+        
+        collides = sprite.spritecollide(player, enemies, True)
+        for c in collides:
+            rand_x = randint(0, window_width - 100)
+            enemy = Enemy("ufo.png", rand_x, 0, 100, 80, randint(1, 5))
+            enemies.add(enemy)
+
+        collides = sprite.groupcollide(enemies, bullets, True, True)
+        for c in collides:
+            rand_x = randint(0, window_width - 100)
+            enemy = Enemy("ufo.png", rand_x, 0, 100, 80, randint(1, 5))
+            enemies.add(enemy)
+            score += 1
+
+        if lost >= 5:
+            window.blit(lose, (200, 200))
+            finish = True
+        if score >= 10:
+            window.blit(win,(200, 200))
+            finish = True
+                
+        display.update()
+        clock.tick(fps)
