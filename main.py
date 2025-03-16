@@ -1,7 +1,6 @@
 from random import randint
 
 from pygame import *
-
 class GameSprite(sprite.Sprite):
     def __init__(self, image_name, x, y, width, height, speed):
         super().__init__()
@@ -22,7 +21,6 @@ class Player(GameSprite):
             self.rect.x -= self.speed
         if keys[K_d] and self.rect.x < window_width - 80:
             self.rect.x += self.speed
-
     def fire(self):
         bullet = Bullet("bullet.png", self.rect.centerx, self.rect.top, 10, 20, 15)
         bullets.add(bullet)
@@ -108,7 +106,7 @@ while run:
 
         bullets.update()
         bullets.draw(window)
-        
+
         collides = sprite.spritecollide(player, enemies, True)
         for c in collides:
             rand_x = randint(0, window_width - 100)
@@ -128,6 +126,6 @@ while run:
         if score >= 10:
             window.blit(win,(200, 200))
             finish = True
-                
+
         display.update()
         clock.tick(fps)
